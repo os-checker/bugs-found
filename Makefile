@@ -34,6 +34,6 @@ all: add_submodule $(TARGETS)
 
 add_submodule:
 	@$(foreach target,$(TARGETS), \
-		git clone https://github.com/$(target) repos/$(target) || echo "$(target) has been added.";)
+		git submodule add https://github.com/$(target) repos/$(target) || echo "$(target) has been added.";)
 
 .PHONY: all
