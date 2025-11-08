@@ -11,7 +11,8 @@ TARGETS := arceos-hypervisor/axaddrspace \
 					 arceos-org/allocator \
 					 arceos-org/axconfig-gen \
 					 arceos-org/axsched \
-					 arceos-org/linked_list_r4l
+					 arceos-org/linked_list_r4l \
+					 arceos-org/slab_allocator
 
 #### Extra `cargo miri test` arguments ####
 TESTCASE_arceos-org_allocator := tlsf_alloc

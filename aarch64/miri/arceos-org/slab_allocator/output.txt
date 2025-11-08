@@ -1,0 +1,90 @@
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+      Adding buddy_system_allocator v0.10.0 (available: v0.11.0)
+   Compiling buddy_system_allocator v0.10.0
+   Compiling slab_allocator v0.3.1 (/home/gh-zjp-CN/bugs-found/repos/arceos-org/slab_allocator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/slab_allocator-be4a5dc4fc1ff21f)
+
+running 7 tests
+test tests::allocate_and_free_double_usize ... warning: integer-to-pointer cast
+  --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/lib.rs:94:65
+   |
+94 |             self.free_list[size.trailing_zeros() as usize].push(current_start as *mut usize);
+   |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast
+   |
+   = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program
+   = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation
+   = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead
+   = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics
+   = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning
+   = note: BACKTRACE on thread `tests::allocate`:
+   = note: inside `buddy_system_allocator::Heap::<32>::add_to_heap` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/lib.rs:94:65: 94:92
+   = note: inside `buddy_system_allocator::Heap::<32>::init` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/lib.rs:103:9: 103:46
+note: inside `Heap::new`
+  --> src/lib.rs:82:17
+   |
+82 |                 buddy.init(heap_start_addr, heap_size);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `tests::new_heap`
+  --> src/tests.rs:22:25
+   |
+22 |     let heap = unsafe { Heap::new(&test_heap.heap_space[0] as *const u8 as usize, HEAP_SIZE) };
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `tests::allocate_and_free_double_usize`
+  --> src/tests.rs:58:20
+   |
+58 |     let mut heap = new_heap();
+   |                    ^^^^^^^^^^
+note: inside closure
+  --> src/tests.rs:57:36
+   |
+56 | #[test]
+   | ------- in this attribute macro expansion
+57 | fn allocate_and_free_double_usize() {
+   |                                    ^
+
+error: Undefined Behavior: attempting a write access using <wildcard> at alloc42152[0x0], but no exposed tags have suitable permission in the borrow stack for this location
+  --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/linked_list.rs:34:9
+   |
+34 |         *item = self.head as usize;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ this error occurs as part of an access at alloc42152[0x0..0x8]
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+   = note: BACKTRACE on thread `tests::allocate`:
+   = note: inside `buddy_system_allocator::linked_list::LinkedList::push` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/linked_list.rs:34:9: 34:35
+   = note: inside `buddy_system_allocator::Heap::<32>::add_to_heap` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/lib.rs:94:13: 94:93
+   = note: inside `buddy_system_allocator::Heap::<32>::init` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/buddy_system_allocator-0.10.0/src/lib.rs:103:9: 103:46
+note: inside `Heap::new`
+  --> src/lib.rs:82:17
+   |
+82 |                 buddy.init(heap_start_addr, heap_size);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `tests::new_heap`
+  --> src/tests.rs:22:25
+   |
+22 |     let heap = unsafe { Heap::new(&test_heap.heap_space[0] as *const u8 as usize, HEAP_SIZE) };
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `tests::allocate_and_free_double_usize`
+  --> src/tests.rs:58:20
+   |
+58 |     let mut heap = new_heap();
+   |                    ^^^^^^^^^^
+note: inside closure
+  --> src/tests.rs:57:36
+   |
+56 | #[test]
+   | ------- in this attribute macro expansion
+57 | fn allocate_and_free_double_usize() {
+   |                                    ^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+error: test failed, to rerun pass `--lib`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/arceos-org/slab_allocator/target/miri/aarch64-unknown-linux-gnu/debug/deps/slab_allocator-be4a5dc4fc1ff21f` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.

@@ -19,3 +19,6 @@
 [submodule "repos/arceos-org/linked_list_r4l"]
 	path = repos/arceos-org/linked_list_r4l
 	url = https://github.com/arceos-org/linked_list_r4l
+[submodule "repos/arceos-org/slab_allocator"]
+	path = repos/arceos-org/slab_allocator
+	url = https://github.com/arceos-org/slab_allocator
