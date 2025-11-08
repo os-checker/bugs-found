@@ -8,7 +8,8 @@ OUT_FILE = $(MIRI_DIR)/$(1)/output.txt
 TARGETS := arceos-hypervisor/axaddrspace \
 					 Starry-OS/starry-process \
 					 arceos-hypervisor/x86_vcpu \
-					 arceos-org/allocator
+					 arceos-org/allocator \
+					 arceos-org/axconfig-gen
 
 # Extra `cargo miri test` arguments
 TESTCASE_arceos-org_allocator := tlsf_alloc
