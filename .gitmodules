@@ -1,0 +1,3 @@
+[submodule "repos/arceos-hypervisor/axaddrspace"]
+	path = repos/arceos-hypervisor/axaddrspace
+	url = https://github.com/arceos-hypervisor/axaddrspace
