@@ -4,9 +4,6 @@
 [submodule "repos/arceos-org/allocator"]
 	path = repos/arceos-org/allocator
 	url = https://github.com/arceos-org/allocator
-[submodule "repos/arceos-org/axconfig-gen"]
-	path = repos/arceos-org/axconfig-gen
-	url = https://github.com/arceos-org/axconfig-gen
 [submodule "repos/arceos-hypervisor/axaddrspace"]
 	path = repos/arceos-hypervisor/axaddrspace
 	url = https://github.com/arceos-hypervisor/axaddrspace

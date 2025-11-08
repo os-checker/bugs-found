@@ -45,8 +45,11 @@ add_submodule:
 
 # `make remove_submodule REPO=user/repo`
 remove_submodule:
-	git submodule deinit repos/$(REPO)
-	git rm repos/$(REPO) -f
-	rm .git/modules/repos/$(REPO) -rf
+	@if [ -n "$(REPO)" ]; then \
+	git submodule deinit repos/$(REPO); \
+	git rm repos/$(REPO) -f; \
+	rm .git/modules/repos/$(REPO) -rf; \
+	rm $(call OUT_DIR,$(REPO)) -rf; \
+	fi
 
 .PHONY: all
