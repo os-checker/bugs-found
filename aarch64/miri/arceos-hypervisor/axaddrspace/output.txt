@@ -1,0 +1,144 @@
+   Compiling proc-macro2 v1.0.103
+   Compiling hashbrown v0.16.0
+   Compiling memory_addr v0.4.0
+   Compiling quote v1.0.42
+   Compiling equivalent v1.0.2
+   Compiling unicode-ident v1.0.22
+   Compiling winnow v0.7.13
+   Compiling tock-registers v0.9.0
+   Compiling log v0.4.28
+   Compiling axerrno v0.1.0
+   Compiling toml_datetime v0.7.3
+   Compiling bitflags v2.10.0
+   Compiling scopeguard v1.2.0
+   Compiling lazyinit v0.2.2
+   Compiling cfg-if v1.0.4
+   Compiling numeric-enum-macro v0.2.0
+   Compiling bit_field v0.10.3
+   Compiling assert_matches v1.5.0
+   Compiling lazy_static v1.5.0
+   Compiling lock_api v0.4.14
+   Compiling aarch64-cpu v10.0.0
+   Compiling memory_set v0.4.0
+   Compiling spin v0.10.0
+   Compiling indexmap v2.12.0
+   Compiling syn v2.0.109
+   Compiling toml_parser v1.0.4
+   Compiling toml_edit v0.23.7
+   Compiling proc-macro-crate v3.4.0
+   Compiling page_table_entry v0.5.5
+   Compiling page_table_multiarch v0.5.5
+   Compiling axaddrspace v0.1.2 (/home/gh-zjp-CN/bugs-found/repos/arceos-hypervisor/axaddrspace)
+   Compiling axin v0.1.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.67s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/axaddrspace-2affef44dc892d3f)
+
+running 21 tests
+test address_space::tests::test_addrspace_creation ... warning: integer-to-pointer cast
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memory_addr-0.4.0/src/addr.rs:491:9
+    |
+491 |         self.0 as *mut u8
+    |         ^^^^^^^^^^^^^^^^^ integer-to-pointer cast
+    |
+    = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program
+    = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation
+    = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead
+    = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics
+    = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning
+    = note: BACKTRACE on thread `address_space::`:
+    = note: inside `memory_addr::VirtAddr::as_mut_ptr` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memory_addr-0.4.0/src/addr.rs:491:9: 491:26
+    = note: inside `page_table_multiarch::PageTable64::<npt::arch::aarch64::A64HVPagingMetaData, npt::arch::aarch64::A64PTEHV, test_utils::MockHal>::alloc_table` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/page_table_multiarch-0.5.5/src/bits64.rs:361:23: 361:58
+    = note: inside `page_table_multiarch::PageTable64::<npt::arch::aarch64::A64HVPagingMetaData, npt::arch::aarch64::A64PTEHV, test_utils::MockHal>::try_new` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/page_table_multiarch-0.5.5/src/bits64.rs:40:26: 40:45
+note: inside `address_space::AddrSpace::<test_utils::MockHal>::new_empty`
+   --> src/address_space/mod.rs:61:17
+    |
+61  |             pt: PageTable::try_new().map_err(|_| AxError::NoMemory)?,
+    |                 ^^^^^^^^^^^^^^^^^^^^
+note: inside `address_space::tests::setup_test_addr_space`
+   --> src/address_space/mod.rs:279:26
+    |
+279 |         let addr_space = AddrSpace::<MockHal>::new_empty(BASE, SIZE).unwrap();
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> src/address_space/mod.rs:289:40
+    |
+289 |         let (addr_space, base, size) = setup_test_addr_space();
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^
+    = note: inside `<{closure@src/address_space/mod.rs:284:5: 284:70} as core::ops::FnOnce<()>>::call_once - shim` at /home/gh-zjp-CN/.rustup/toolchains/nightly-2025-05-20-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5: 250:71
+note: inside `test_utils::mock_hal_test::<{closure@src/address_space/mod.rs:284:5: 284:70}, ()>`
+   --> src/test_utils/mod.rs:95:5
+    |
+95  |     test_fn()
+    |     ^^^^^^^^^
+note: inside `address_space::tests::test_addrspace_creation`
+   --> src/address_space/mod.rs:284:5
+    |
+284 |     #[axin(decorator(mock_hal_test), on_exit(test_dealloc_count(1)))]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> src/address_space/mod.rs:288:33
+    |
+283 |     #[test]
+    |     ------- in this procedural macro expansion
+...
+288 |     fn test_addrspace_creation() {
+    |                                 ^
+
+error: Undefined Behavior: attempting a write access using <wildcard> at alloc260[0x1000], but no exposed tags have suitable permission in the borrow stack for this location
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/page_table_multiarch-0.5.5/src/bits64.rs:362:22
+    |
+362 |             unsafe { core::ptr::write_bytes(ptr, 0, PAGE_SIZE_4K) };
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                      |
+    |                      attempting a write access using <wildcard> at alloc260[0x1000], but no exposed tags have suitable permission in the borrow stack for this location
+    |                      this error occurs as part of an access at alloc260[0x1000..0x2000]
+    |
+    = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+    = note: BACKTRACE on thread `address_space::`:
+    = note: inside `page_table_multiarch::PageTable64::<npt::arch::aarch64::A64HVPagingMetaData, npt::arch::aarch64::A64PTEHV, test_utils::MockHal>::alloc_table` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/page_table_multiarch-0.5.5/src/bits64.rs:362:22: 362:66
+    = note: inside `page_table_multiarch::PageTable64::<npt::arch::aarch64::A64HVPagingMetaData, npt::arch::aarch64::A64PTEHV, test_utils::MockHal>::try_new` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/page_table_multiarch-0.5.5/src/bits64.rs:40:26: 40:45
+note: inside `address_space::AddrSpace::<test_utils::MockHal>::new_empty`
+   --> src/address_space/mod.rs:61:17
+    |
+61  |             pt: PageTable::try_new().map_err(|_| AxError::NoMemory)?,
+    |                 ^^^^^^^^^^^^^^^^^^^^
+note: inside `address_space::tests::setup_test_addr_space`
+   --> src/address_space/mod.rs:279:26
+    |
+279 |         let addr_space = AddrSpace::<MockHal>::new_empty(BASE, SIZE).unwrap();
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> src/address_space/mod.rs:289:40
+    |
+289 |         let (addr_space, base, size) = setup_test_addr_space();
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^
+    = note: inside `<{closure@src/address_space/mod.rs:284:5: 284:70} as core::ops::FnOnce<()>>::call_once - shim` at /home/gh-zjp-CN/.rustup/toolchains/nightly-2025-05-20-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5: 250:71
+note: inside `test_utils::mock_hal_test::<{closure@src/address_space/mod.rs:284:5: 284:70}, ()>`
+   --> src/test_utils/mod.rs:95:5
+    |
+95  |     test_fn()
+    |     ^^^^^^^^^
+note: inside `address_space::tests::test_addrspace_creation`
+   --> src/address_space/mod.rs:284:5
+    |
+284 |     #[axin(decorator(mock_hal_test), on_exit(test_dealloc_count(1)))]
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> src/address_space/mod.rs:288:33
+    |
+283 |     #[test]
+    |     ------- in this procedural macro expansion
+...
+288 |     fn test_addrspace_creation() {
+    |                                 ^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+error: test failed, to rerun pass `--lib`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-2025-05-20-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/arceos-hypervisor/axaddrspace/target/miri/aarch64-unknown-linux-gnu/debug/deps/axaddrspace-2affef44dc892d3f` (exit status: 1)
+note: test exited abnormally; to see the full output pass --nocapture to the harness.

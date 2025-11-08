@@ -1,0 +1,41 @@
+Preparing a sysroot for Miri (target: aarch64-unknown-linux-gnu)... done
+   Compiling proc-macro2 v1.0.103
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.42
+   Compiling cfg-if v1.0.4
+   Compiling dtor-proc-macro v0.0.5
+   Compiling ctor-proc-macro v0.0.6
+   Compiling lazyinit v0.2.2
+   Compiling weak-map v0.1.2
+   Compiling dtor v0.0.6
+   Compiling ctor v0.4.3
+   Compiling syn v2.0.109
+   Compiling crate_interface v0.1.4
+   Compiling kernel_guard v0.1.2
+   Compiling kspin v0.1.1
+   Compiling starry-process v0.2.0 (/home/gh-zjp-CN/bugs-found/repos/Starry-OS/starry-process)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.70s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/starry_process-07919f4eeb7944bb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/group.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/group-eedb80a2557a563c)
+error: Undefined Behavior: calling a function with return type usize passing return place of type ()
+  |
+  = note: Undefined Behavior occurred here
+  = note: (no span available)
+  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+  = help: this means these two types are not *guaranteed* to be ABI-compatible across all targets
+  = help: if you think this code should be accepted anyway, please report an issue with Miri
+  = note: BACKTRACE:
+
+error: aborting due to 1 previous error
+
+error: test failed, to rerun pass `--test group`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/Starry-OS/starry-process/target/miri/aarch64-unknown-linux-gnu/debug/deps/group-eedb80a2557a563c` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.

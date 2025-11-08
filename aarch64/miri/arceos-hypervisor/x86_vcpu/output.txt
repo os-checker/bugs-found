@@ -1,0 +1,448 @@
+Preparing a sysroot for Miri (target: aarch64-unknown-linux-gnu)... done
+   Compiling proc-macro2 v1.0.103
+   Compiling quote v1.0.42
+   Compiling unicode-ident v1.0.22
+   Compiling winnow v0.7.13
+   Compiling hashbrown v0.16.0
+   Compiling equivalent v1.0.2
+   Compiling toml_datetime v0.7.3
+   Compiling serde_core v1.0.228
+   Compiling bitflags v2.10.0
+   Compiling axerrno v0.1.0
+   Compiling log v0.4.28
+   Compiling memory_addr v0.4.0
+   Compiling tock-registers v0.9.0
+   Compiling bit_field v0.10.3
+   Compiling cfg-if v1.0.4
+   Compiling lazyinit v0.2.2
+   Compiling numeric-enum-macro v0.2.0
+   Compiling serde v1.0.228
+   Compiling toml_writer v1.0.4
+   Compiling scopeguard v1.2.0
+   Compiling paste v1.0.15
+   Compiling percpu v0.2.0
+   Compiling rustversion v1.0.22
+   Compiling x86 v0.52.0
+   Compiling bitflags v1.3.2
+   Compiling volatile v0.4.6
+   Compiling bit v0.1.1
+   Compiling tock-registers v0.10.1
+   Compiling raw-cpuid v10.7.0
+   Compiling aarch64-cpu v10.0.0
+   Compiling memory_set v0.4.0
+   Compiling lock_api v0.4.14
+   Compiling raw-cpuid v11.6.0
+   Compiling spin v0.9.8
+   Compiling indexmap v2.12.0
+   Compiling syn v2.0.109
+   Compiling x86_64 v0.15.2
+   Compiling toml_parser v1.0.4
+   Compiling toml_edit v0.23.7
+   Compiling serde_spanned v1.0.3
+   Compiling toml v0.9.8
+   Compiling proc-macro-crate v3.4.0
+   Compiling page_table_entry v0.5.5
+   Compiling page_table_multiarch v0.5.5
+   Compiling axaddrspace v0.1.2
+   Compiling serde_derive v1.0.228
+   Compiling enumerable_derive v1.2.0
+   Compiling axvisor_api_proc v0.1.0
+   Compiling crate_interface v0.1.4
+   Compiling serde_repr v0.1.20
+   Compiling percpu_macros v0.2.0
+   Compiling axvisor_api v0.1.0
+   Compiling axvcpu v0.1.1
+   Compiling enumerable v1.2.0
+   Compiling axvmconfig v0.1.0
+   Compiling axdevice_base v0.1.0
+   Compiling x86_vlapic v0.1.0
+   Compiling x86_vcpu v0.1.0 (/home/gh-zjp-CN/bugs-found/repos/arceos-hypervisor/x86_vcpu)
+error[E0432]: unresolved import `x86::msr`
+ --> src/msr.rs:1:10
+  |
+1 | use x86::msr::{rdmsr, wrmsr};
+  |          ^^^ could not find `msr` in `x86`
+
+error[E0432]: unresolved import `x86::irq`
+   --> src/vmx/definitions.rs:238:18
+    |
+238 |         use x86::irq::*;
+    |                  ^^^ could not find `irq` in `x86`
+
+error[E0432]: unresolved import `x86::irq`
+   --> src/vmx/definitions.rs:254:18
+    |
+254 |         use x86::irq::*;
+    |                  ^^^ could not find `irq` in `x86`
+
+error[E0433]: failed to resolve: could not find `bits64` in `x86`
+ --> src/vmx/instructions.rs:2:10
+  |
+2 | use x86::bits64::rflags::{self, RFlags};
+  |          ^^^^^^ could not find `bits64` in `x86`
+
+error[E0432]: unresolved import `x86::bits64`
+ --> src/vmx/instructions.rs:2:10
+  |
+2 | use x86::bits64::rflags::{self, RFlags};
+  |          ^^^^^^ could not find `bits64` in `x86`
+
+error[E0432]: unresolved import `x86::vmx`
+ --> src/vmx/instructions.rs:3:10
+  |
+3 | use x86::vmx::{Result, VmFail};
+  |          ^^^ could not find `vmx` in `x86`
+
+error[E0432]: unresolved import `x86::bits64`
+ --> src/vmx/percpu.rs:1:10
+  |
+1 | use x86::bits64::vmx;
+  |          ^^^^^^ could not find `bits64` in `x86`
+
+error[E0432]: unresolved imports `x86::bits64`, `x86::controlregs`, `x86::dtables`, `x86::dtables`, `x86::segmentation`
+  --> src/vmx/vcpu.rs:10:5
+   |
+10 |     bits64::vmx,
+   |     ^^^^^^ could not find `bits64` in `x86`
+11 |     controlregs::{Xcr0, xcr0 as xcr0_read, xcr0_write},
+   |     ^^^^^^^^^^^ could not find `controlregs` in `x86`
+12 |     dtables::{self, DescriptorTablePointer},
+   |     ^^^^^^^   ^^^^ no `dtables` in the root
+   |     |
+   |     could not find `dtables` in `x86`
+13 |     segmentation::SegmentSelector,
+   |     ^^^^^^^^^^^^ could not find `segmentation` in `x86`
+
+error[E0432]: unresolved import `raw_cpuid::cpuid`
+    --> src/vmx/vcpu.rs:1112:38
+     |
+1112 |         use raw_cpuid::{CpuIdResult, cpuid};
+     |                                      ^^^^^
+     |                                      |
+     |                                      no `cpuid` in the root
+     |                                      help: a similar name exists in the module (notice the capitalization): `CpuId`
+     |
+note: found an item that was configured out
+    --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:124:14
+     |
+124  | macro_rules! cpuid {
+     |              ^^^^^
+note: the item is gated here
+    --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:119:1
+     |
+119  | / #[cfg(any(
+120  | |     all(target_arch = "x86", not(target_env = "sgx"), target_feature = "sse"),
+121  | |     all(target_arch = "x86_64", not(target_env = "sgx"))
+122  | | ))]
+     | |___^
+
+error[E0433]: failed to resolve: could not find `vmx` in `x86`
+   --> src/vmx/vmcs.rs:635:18
+    |
+635 |     pub use x86::vmx::vmcs::control::{EntryControls, ExitControls};
+    |                  ^^^ could not find `vmx` in `x86`
+
+error[E0433]: failed to resolve: could not find `vmx` in `x86`
+   --> src/vmx/vmcs.rs:635:18
+    |
+635 |     pub use x86::vmx::vmcs::control::{EntryControls, ExitControls};
+    |                  ^^^ could not find `vmx` in `x86`
+    |
+    = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+error[E0433]: failed to resolve: could not find `vmx` in `x86`
+   --> src/vmx/vmcs.rs:636:18
+    |
+636 |     pub use x86::vmx::vmcs::control::{PinbasedControls, PrimaryControls, SecondaryControls};
+    |                  ^^^ could not find `vmx` in `x86`
+
+error[E0433]: failed to resolve: could not find `vmx` in `x86`
+   --> src/vmx/vmcs.rs:636:18
+    |
+636 |     pub use x86::vmx::vmcs::control::{PinbasedControls, PrimaryControls, SecondaryControls};
+    |                  ^^^ could not find `vmx` in `x86`
+    |
+    = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+error[E0432]: unresolved import `x86::bits64`
+ --> src/vmx/vmcs.rs:7:10
+  |
+7 | use x86::bits64::vmx;
+  |          ^^^^^^ could not find `bits64` in `x86`
+
+error[E0432]: unresolved import `x86::vmx`
+  --> src/vmx/mod.rs:30:14
+   |
+30 |     use x86::vmx::VmFail;
+   |              ^^^ could not find `vmx` in `x86`
+
+error[E0599]: no function or associated item named `read` found for struct `x86_64::registers::control::Cr4` in the current scope
+  --> src/vmx/percpu.rs:41:14
+   |
+41 |         Cr4::read().contains(Cr4Flags::VIRTUAL_MACHINE_EXTENSIONS)
+   |              ^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `read` found for struct `x86_64::registers::control::Cr0` in the current scope
+  --> src/vmx/percpu.rs:79:31
+   |
+79 |         if !cr_is_valid!(Cr0::read().bits(), CR0) {
+   |                               ^^^^ function or associated item not found in `Cr0`
+
+error[E0599]: no function or associated item named `read` found for struct `x86_64::registers::control::Cr4` in the current scope
+  --> src/vmx/percpu.rs:82:31
+   |
+82 |         if !cr_is_valid!(Cr4::read().bits(), CR4) {
+   |                               ^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `write` found for struct `x86_64::registers::control::Cr4` in the current scope
+   --> src/vmx/percpu.rs:108:18
+    |
+108 |             Cr4::write(Cr4::read() | Cr4Flags::VIRTUAL_MACHINE_EXTENSIONS);
+    |                  ^^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `read` found for struct `x86_64::registers::control::Cr4` in the current scope
+   --> src/vmx/percpu.rs:108:29
+    |
+108 |             Cr4::write(Cr4::read() | Cr4Flags::VIRTUAL_MACHINE_EXTENSIONS);
+    |                             ^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `update` found for struct `x86_64::registers::control::Cr4` in the current scope
+   --> src/vmx/percpu.rs:136:18
+    |
+136 |             Cr4::update(|cr4| cr4.remove(Cr4Flags::VIRTUAL_MACHINE_EXTENSIONS));
+    |                  ^^^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `write` found for struct `x86_64::registers::control::Cr4` in the current scope
+  --> src/vmx/vcpu.rs:98:27
+   |
+98 |             unsafe { Cr4::write(Cr4::read() | Cr4Flags::OSXSAVE) };
+   |                           ^^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `read` found for struct `x86_64::registers::control::Cr4` in the current scope
+  --> src/vmx/vcpu.rs:98:38
+   |
+98 |             unsafe { Cr4::write(Cr4::read() | Cr4Flags::OSXSAVE) };
+   |                                      ^^^^ function or associated item not found in `Cr4`
+
+error[E0599]: no function or associated item named `new` found for struct `raw_cpuid::CpuId` in the current scope
+   --> src/vmx/vcpu.rs:104:28
+    |
+104 |         let cpuid = CpuId::new();
+    |                            ^^^ function or associated item not found in `CpuId<_>`
+    |
+note: if you're trying to build a new `raw_cpuid::CpuId<_>` consider using one of the following associated functions:
+      raw_cpuid::CpuId::<R>::with_cpuid_reader
+      raw_cpuid::CpuId::<R>::with_cpuid_fn
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:338:5
+    |
+338 |     pub fn with_cpuid_reader(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+354 |     pub fn with_cpuid_fn(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for struct `raw_cpuid::CpuId` in the current scope
+   --> src/vmx/vcpu.rs:113:28
+    |
+113 |         let cpuid = CpuId::new();
+    |                            ^^^ function or associated item not found in `CpuId<_>`
+    |
+note: if you're trying to build a new `raw_cpuid::CpuId<_>` consider using one of the following associated functions:
+      raw_cpuid::CpuId::<R>::with_cpuid_reader
+      raw_cpuid::CpuId::<R>::with_cpuid_fn
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:338:5
+    |
+338 |     pub fn with_cpuid_reader(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+354 |     pub fn with_cpuid_fn(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `read_raw` found for struct `x86_64::registers::control::Cr0` in the current scope
+   --> src/vmx/vcpu.rs:585:36
+    |
+585 |         VmcsHostNW::CR0.write(Cr0::read_raw() as _)?;
+    |                                    ^^^^^^^^ function or associated item not found in `Cr0`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `msr::MsrReadWrite` defines an item `read_raw`, perhaps you need to implement it
+   --> src/msr.rs:61:1
+    |
+61  | pub(super) trait MsrReadWrite {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `read_raw` found for struct `x86_64::registers::control::Cr3` in the current scope
+   --> src/vmx/vcpu.rs:586:36
+    |
+586 |         VmcsHostNW::CR3.write(Cr3::read_raw().0.start_address().as_u64() as _)?;
+    |                                    ^^^^^^^^ function or associated item not found in `Cr3`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `msr::MsrReadWrite` defines an item `read_raw`, perhaps you need to implement it
+   --> src/msr.rs:61:1
+    |
+61  | pub(super) trait MsrReadWrite {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `read_raw` found for struct `x86_64::registers::control::Cr4` in the current scope
+   --> src/vmx/vcpu.rs:587:36
+    |
+587 |         VmcsHostNW::CR4.write(Cr4::read_raw() as _)?;
+    |                                    ^^^^^^^^ function or associated item not found in `Cr4`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `msr::MsrReadWrite` defines an item `read_raw`, perhaps you need to implement it
+   --> src/msr.rs:61:1
+    |
+61  | pub(super) trait MsrReadWrite {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for struct `raw_cpuid::CpuId` in the current scope
+   --> src/vmx/vcpu.rs:678:32
+    |
+678 |         let raw_cpuid = CpuId::new();
+    |                                ^^^ function or associated item not found in `CpuId<_>`
+    |
+note: if you're trying to build a new `raw_cpuid::CpuId<_>` consider using one of the following associated functions:
+      raw_cpuid::CpuId::<R>::with_cpuid_reader
+      raw_cpuid::CpuId::<R>::with_cpuid_fn
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:338:5
+    |
+338 |     pub fn with_cpuid_reader(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+354 |     pub fn with_cpuid_fn(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for struct `raw_cpuid::CpuId` in the current scope
+   --> src/vmx/mod.rs:18:46
+    |
+18  |     if let Some(feature) = raw_cpuid::CpuId::new().get_feature_info() {
+    |                                              ^^^ function or associated item not found in `CpuId<_>`
+    |
+note: if you're trying to build a new `raw_cpuid::CpuId<_>` consider using one of the following associated functions:
+      raw_cpuid::CpuId::<R>::with_cpuid_reader
+      raw_cpuid::CpuId::<R>::with_cpuid_fn
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/raw-cpuid-11.6.0/src/lib.rs:338:5
+    |
+338 |     pub fn with_cpuid_reader(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+354 |     pub fn with_cpuid_fn(cpuid_fn: R) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:242:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+242 |                 | INVALID_TSS_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` on by default
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:243:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+242 |                 | INVALID_TSS_VECTOR
+243 |                 | SEGMENT_NOT_PRESENT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ no value can reach this
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:244:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+...
+244 |                 | STACK_SEGEMENT_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ no value can reach this
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:245:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+...
+245 |                 | GENERAL_PROTECTION_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no value can reach this
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:246:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+...
+246 |                 | PAGE_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^ no value can reach this
+
+warning: unreachable pattern
+   --> src/vmx/definitions.rs:247:19
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ------------------- matches any value
+...
+247 |                 | ALIGNMENT_CHECK_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^ no value can reach this
+
+warning: unused variable: `DOUBLE_FAULT_VECTOR`
+   --> src/vmx/definitions.rs:241:13
+    |
+241 |             DOUBLE_FAULT_VECTOR
+    |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_DOUBLE_FAULT_VECTOR`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: variable `INVALID_TSS_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:242:19
+    |
+242 |                 | INVALID_TSS_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_INVALID_TSS_VECTOR` instead
+
+warning: variable `SEGMENT_NOT_PRESENT_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:243:19
+    |
+243 |                 | SEGMENT_NOT_PRESENT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_SEGMENT_NOT_PRESENT_VECTOR` instead
+
+warning: variable `STACK_SEGEMENT_FAULT_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:244:19
+    |
+244 |                 | STACK_SEGEMENT_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_STACK_SEGEMENT_FAULT_VECTOR` instead
+
+warning: variable `GENERAL_PROTECTION_FAULT_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:245:19
+    |
+245 |                 | GENERAL_PROTECTION_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_GENERAL_PROTECTION_FAULT_VECTOR` instead
+
+warning: variable `PAGE_FAULT_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:246:19
+    |
+246 |                 | PAGE_FAULT_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_PAGE_FAULT_VECTOR` instead
+
+warning: variable `ALIGNMENT_CHECK_VECTOR` is assigned to, but never used
+   --> src/vmx/definitions.rs:247:19
+    |
+247 |                 | ALIGNMENT_CHECK_VECTOR
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_ALIGNMENT_CHECK_VECTOR` instead
+
+Some errors have detailed explanations: E0432, E0433, E0599.
+For more information about an error, try `rustc --explain E0432`.
+warning: `x86_vcpu` (lib) generated 13 warnings
+error: could not compile `x86_vcpu` (lib) due to 31 previous errors; 13 warnings emitted
