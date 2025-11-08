@@ -16,3 +16,6 @@
 [submodule "repos/arceos-org/axsched"]
 	path = repos/arceos-org/axsched
 	url = https://github.com/arceos-org/axsched
+[submodule "repos/arceos-org/linked_list_r4l"]
+	path = repos/arceos-org/linked_list_r4l
+	url = https://github.com/arceos-org/linked_list_r4l

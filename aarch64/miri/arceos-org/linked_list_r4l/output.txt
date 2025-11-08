@@ -1,0 +1,54 @@
+   Compiling linked_list_r4l v0.2.1 (/home/gh-zjp-CN/bugs-found/repos/arceos-org/linked_list_r4l)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/linked_list_r4l-94d0f7a2abdd751c)
+
+running 2 tests
+test linked_list::tests::test_push_back ... error: Undefined Behavior: trying to retag from <141392> for Unique permission at alloc43519[0x0], but that tag only grants SharedReadOnly permission for this location
+    --> /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1292:9
+     |
+1292 |         Box(unsafe { Unique::new_unchecked(raw) }, alloc)
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this error occurs as part of retag at alloc43519[0x0..0x20]
+     |
+     = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+     = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+help: <141392> was created by a SharedReadOnly retag at offsets [0x0..0x8]
+    --> src/raw_list.rs:162:28
+     |
+ 162 |         let new_ptr = Some(NonNull::from(new));
+     |                            ^^^^^^^^^^^^^^^^^^
+     = note: BACKTRACE (of the first span) on thread `linked_list::te`:
+     = note: inside `std::boxed::Box::<linked_list::tests::Example>::from_raw_in` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1292:9: 1292:58
+     = note: inside `std::boxed::Box::<linked_list::tests::Example>::from_raw` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1065:18: 1065:48
+note: inside `<std::boxed::Box<linked_list::tests::Example> as linked_list::Wrapper<linked_list::tests::Example>>::from_pointer`
+    --> src/linked_list.rs:41:18
+     |
+  41 |         unsafe { Box::from_raw(ptr.as_ptr()) }
+     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `linked_list::List::<std::boxed::Box<linked_list::tests::Example>>::pop_front`
+    --> src/linked_list.rs:216:23
+     |
+ 216 |         Some(unsafe { G::Wrapped::from_pointer(front) })
+     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `<linked_list::List<std::boxed::Box<linked_list::tests::Example>> as std::ops::Drop>::drop`
+    --> src/linked_list.rs:233:15
+     |
+ 233 |         while self.pop_front().is_some() {}
+     |               ^^^^^^^^^^^^^^^^
+     = note: inside `std::ptr::drop_in_place::<linked_list::List<std::boxed::Box<linked_list::tests::Example>>> - shim(Some(linked_list::List<std::boxed::Box<linked_list::tests::Example>>))` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1: 807:25
+note: inside closure
+    --> src/linked_list.rs:342:24
+     |
+ 341 |     #[test]
+     |     ------- in this attribute macro expansion
+ 342 |     fn test_push_back() {
+     |                        ^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error
+
+error: test failed, to rerun pass `--lib`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/arceos-org/linked_list_r4l/target/miri/aarch64-unknown-linux-gnu/debug/deps/linked_list_r4l-94d0f7a2abdd751c 'linked_list::tests::test_push_back' 'raw_list::tests::test_one_insert_after'` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.
