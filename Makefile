@@ -27,7 +27,8 @@ $(1):
 	cargo miri test $(TESTCASE_$(subst /,_,$(1))) 2>&1 | tee $$$$OUT_FILE
 endef
 
-# Dynamically generate targets.
+# Dynamically generate targets for each of $(TARGETS).
+# So one exemplificative usage  is `make arceos-hypervisor/axaddrspace`.
 $(foreach target,$(TARGETS),$(eval $(call run_miri_test,$(target))))
 
 all: add_submodule $(TARGETS)
@@ -35,5 +36,11 @@ all: add_submodule $(TARGETS)
 add_submodule:
 	@$(foreach target,$(TARGETS), \
 		git submodule add https://github.com/$(target) repos/$(target) || echo "$(target) has been added.";)
+
+# `make remove_submodule REPO=user/repo`
+remove_submodule:
+	git submodule deinit repos/$(REPO)
+	git rm repos/$(REPO) -f
+	rm .git/modules/repos/$(REPO) -rf
 
 .PHONY: all
