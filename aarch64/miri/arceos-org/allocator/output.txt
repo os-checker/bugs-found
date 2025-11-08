@@ -1,0 +1,236 @@
+   Compiling proc-macro2 v1.0.103
+   Compiling quote v1.0.42
+   Compiling unicode-ident v1.0.22
+   Compiling cfg-if v1.0.4
+   Compiling libc v0.2.177
+   Compiling zerocopy v0.8.27
+   Compiling serde_core v1.0.228
+   Compiling crossbeam-utils v0.8.21
+   Compiling serde v1.0.228
+   Compiling autocfg v1.5.0
+   Compiling syn v1.0.109
+   Compiling rayon-core v1.13.0
+   Compiling either v1.15.0
+   Compiling serde_json v1.0.145
+   Compiling ciborium-io v0.2.2
+   Compiling base64 v0.13.1
+   Compiling ryu v1.0.20
+   Compiling anstyle v1.0.13
+   Compiling plotters-backend v0.3.7
+   Compiling itoa v1.0.15
+   Compiling memchr v2.7.6
+   Compiling unicode-width v0.1.14
+   Compiling regex-syntax v0.8.8
+   Compiling clap_lex v0.7.6
+   Compiling const-default v1.0.0
+   Compiling bit_field v0.10.3
+   Compiling cast v0.3.0
+   Compiling same-file v1.0.6
+   Compiling buddy_system_allocator v0.10.0
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling once_cell v1.21.3
+   Compiling walkdir v2.5.0
+   Compiling slab_allocator v0.3.1 (https://github.com/arceos-org/slab_allocator.git?tag=v0.3.1#3c13499d)
+   Compiling bitmap-allocator v0.2.1
+   Compiling itertools v0.10.5
+   Compiling clap_builder v4.5.51
+   Compiling plotters-svg v0.3.7
+   Compiling num-traits v0.2.19
+   Compiling crossbeam-epoch v0.9.18
+   Compiling crossbeam-deque v0.8.6
+   Compiling syn v2.0.109
+   Compiling regex-automata v0.4.13
+   Compiling getrandom v0.2.16
+   Compiling is-terminal v0.4.17
+   Compiling plotters v0.3.7
+   Compiling rand_core v0.6.4
+   Compiling criterion-plot v0.5.0
+   Compiling rayon v1.11.0
+   Compiling clap v4.5.51
+   Compiling regex v1.12.2
+   Compiling svgbobdoc v0.3.0
+   Compiling rlsf v0.2.1
+   Compiling allocator v0.1.1 (/home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator)
+   Compiling zerocopy-derive v0.8.27
+   Compiling serde_derive v1.0.228
+   Compiling half v2.7.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.3.1
+   Compiling ciborium-ll v0.2.2
+   Compiling rand v0.8.5
+   Compiling ciborium v0.2.2
+   Compiling tinytemplate v1.2.1
+   Compiling criterion v0.5.1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.62s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/allocator-2d510d37f18742d6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.04s
+
+     Running tests/allocator.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/allocator-590b189d21e53bf6)
+
+running 1 test
+test tlsf_alloc ... warning: integer-to-pointer cast
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/tlsf.rs:34:56
+    |
+ 34 |             let pool = core::slice::from_raw_parts_mut(start as *mut u8, size);
+    |                                                        ^^^^^^^^^^^^^^^^ integer-to-pointer cast
+    |
+    = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program
+    = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation
+    = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead
+    = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics
+    = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning
+    = note: BACKTRACE on thread `tlsf_alloc`:
+    = note: inside `<allocator::TlsfByteAllocator as allocator::BaseAllocator>::init` at /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/tlsf.rs:34:56: 34:72
+note: inside `allocator::AllocatorRc::<allocator::TlsfByteAllocator>::new`
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/lib.rs:170:13
+    |
+170 |             inner.init(pool.as_mut_ptr() as usize, pool.len());
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> tests/allocator.rs:136:21
+    |
+136 |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `run_test::<{closure@tests/allocator.rs:135:14: 135:20}>`
+   --> tests/allocator.rs:92:5
+    |
+ 92 |     f(pool);
+    |     ^^^^^^^
+note: inside `tlsf_alloc`
+   --> tests/allocator.rs:135:5
+    |
+135 | /     run_test(|pool| {
+136 | |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+137 | |         test_alignment(50, &alloc);
+138 | |         test_vec(3_000_000, &alloc);
+...   |
+141 | |         test_btree_map(50_000, &alloc);
+142 | |     })
+    | |______^
+note: inside closure
+   --> tests/allocator.rs:134:16
+    |
+133 | #[test]
+    | ------- in this attribute macro expansion
+134 | fn tlsf_alloc() {
+    |                ^
+
+warning: integer-to-pointer cast
+   --> /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rlsf-0.2.1/src/tlsf.rs:481:49
+    |
+481 |             core::ptr::slice_from_raw_parts_mut(start as *mut u8, len),
+    |                                                 ^^^^^^^^^^^^^^^^ integer-to-pointer cast
+    |
+    = note: BACKTRACE on thread `tlsf_alloc`:
+    = note: inside `rlsf::tlsf::Tlsf::<'_, u32, u32, 28, 32>::insert_free_block_ptr` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rlsf-0.2.1/src/tlsf.rs:481:49: 481:65
+note: inside `<allocator::TlsfByteAllocator as allocator::BaseAllocator>::init`
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/tlsf.rs:35:13
+    |
+ 35 | /             self.inner
+ 36 | |                 .insert_free_block_ptr(NonNull::new(pool).unwrap())
+    | |___________________________________________________________________^
+note: inside `allocator::AllocatorRc::<allocator::TlsfByteAllocator>::new`
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/lib.rs:170:13
+    |
+170 |             inner.init(pool.as_mut_ptr() as usize, pool.len());
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> tests/allocator.rs:136:21
+    |
+136 |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `run_test::<{closure@tests/allocator.rs:135:14: 135:20}>`
+   --> tests/allocator.rs:92:5
+    |
+ 92 |     f(pool);
+    |     ^^^^^^^
+note: inside `tlsf_alloc`
+   --> tests/allocator.rs:135:5
+    |
+135 | /     run_test(|pool| {
+136 | |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+137 | |         test_alignment(50, &alloc);
+138 | |         test_vec(3_000_000, &alloc);
+...   |
+141 | |         test_btree_map(50_000, &alloc);
+142 | |     })
+    | |______^
+note: inside closure
+   --> tests/allocator.rs:134:16
+    |
+133 | #[test]
+    | ------- in this attribute macro expansion
+134 | fn tlsf_alloc() {
+    |                ^
+
+error: Undefined Behavior: trying to retag from <138873> for Unique permission at alloc42690[0x7ffffe0], but that tag does not exist in the borrow stack for this location
+   --> /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18
+    |
+481 |         unsafe { &mut *self.as_ptr() }
+    |                  ^^^^^^^^^^^^^^^^^^^ this error occurs as part of retag at alloc42690[0x7ffffe0..0x7fffff0]
+    |
+    = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+help: <138873> was created by a SharedReadOnly retag at offsets [0x0..0x10]
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/tlsf.rs:35:13
+    |
+ 35 | /             self.inner
+ 36 | |                 .insert_free_block_ptr(NonNull::new(pool).unwrap())
+    | |___________________________________________________________________^
+    = note: BACKTRACE (of the first span) on thread `tlsf_alloc`:
+    = note: inside `std::ptr::NonNull::<rlsf::tlsf::UsedBlockHdr>::as_mut::<'_>` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18: 481:37
+    = note: inside `rlsf::tlsf::Tlsf::<'_, u32, u32, 28, 32>::insert_free_block_ptr_aligned` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rlsf-0.2.1/src/tlsf.rs:527:13: 527:36
+    = note: inside `rlsf::tlsf::Tlsf::<'_, u32, u32, 28, 32>::insert_free_block_ptr` at /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rlsf-0.2.1/src/tlsf.rs:480:24: 482:11
+note: inside `<allocator::TlsfByteAllocator as allocator::BaseAllocator>::init`
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/tlsf.rs:35:13
+    |
+ 35 | /             self.inner
+ 36 | |                 .insert_free_block_ptr(NonNull::new(pool).unwrap())
+    | |___________________________________________________________________^
+note: inside `allocator::AllocatorRc::<allocator::TlsfByteAllocator>::new`
+   --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/src/lib.rs:170:13
+    |
+170 |             inner.init(pool.as_mut_ptr() as usize, pool.len());
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside closure
+   --> tests/allocator.rs:136:21
+    |
+136 |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `run_test::<{closure@tests/allocator.rs:135:14: 135:20}>`
+   --> tests/allocator.rs:92:5
+    |
+ 92 |     f(pool);
+    |     ^^^^^^^
+note: inside `tlsf_alloc`
+   --> tests/allocator.rs:135:5
+    |
+135 | /     run_test(|pool| {
+136 | |         let alloc = AllocatorRc::new(TlsfByteAllocator::new(), pool);
+137 | |         test_alignment(50, &alloc);
+138 | |         test_vec(3_000_000, &alloc);
+...   |
+141 | |         test_btree_map(50_000, &alloc);
+142 | |     })
+    | |______^
+note: inside closure
+   --> tests/allocator.rs:134:16
+    |
+133 | #[test]
+    | ------- in this attribute macro expansion
+134 | fn tlsf_alloc() {
+    |                ^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error; 2 warnings emitted
+
+error: test failed, to rerun pass `--test allocator`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/arceos-org/allocator/target/miri/aarch64-unknown-linux-gnu/debug/deps/allocator-590b189d21e53bf6 tlsf_alloc` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.
