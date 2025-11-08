@@ -9,10 +9,13 @@ TARGETS := arceos-hypervisor/axaddrspace \
 					 Starry-OS/starry-process \
 					 arceos-hypervisor/x86_vcpu \
 					 arceos-org/allocator \
-					 arceos-org/axconfig-gen
+					 arceos-org/axconfig-gen \
+					 arceos-org/axsched
 
-# Extra `cargo miri test` arguments
+#### Extra `cargo miri test` arguments ####
 TESTCASE_arceos-org_allocator := tlsf_alloc
+# The output only shows UB report of the first testcase.
+TESTCASE_arceos-org_axsched := -- tests::fifo::bench_remove tests::fifo::test_sched
 
 # Run miri and save results.
 define run_miri_test

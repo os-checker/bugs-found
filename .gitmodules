@@ -13,3 +13,6 @@
 [submodule "repos/Starry-OS/starry-process"]
 	path = repos/Starry-OS/starry-process
 	url = https://github.com/Starry-OS/starry-process
+[submodule "repos/arceos-org/axsched"]
+	path = repos/arceos-org/axsched
+	url = https://github.com/arceos-org/axsched

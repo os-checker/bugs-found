@@ -1,0 +1,50 @@
+   Compiling linked_list_r4l v0.2.1
+   Compiling axsched v0.3.1 (/home/gh-zjp-CN/bugs-found/repos/arceos-org/axsched)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (target/miri/aarch64-unknown-linux-gnu/debug/deps/axsched-bbfdae07ace27dc9)
+
+running 2 tests
+test tests::fifo::bench_remove ... error: Undefined Behavior: trying to retag from <3627920> for SharedReadWrite permission at alloc1205774[0x0], but that tag does not exist in the borrow stack for this location
+   --> /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:444:18
+    |
+444 |         unsafe { &*self.as_ptr().cast_const() }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this error occurs as part of retag at alloc1205774[0x0..0x30]
+    |
+    = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+help: <3627920> was created by a SharedReadOnly retag at offsets [0x29..0x71]
+   --> src/fifo.rs:50:18
+    |
+ 50 |         unsafe { self.ready_queue.remove(task) }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: BACKTRACE (of the first span) on thread `tests::fifo::be`:
+    = note: inside `std::ptr::NonNull::<alloc::sync::ArcInner<fifo::FifoTask<usize>>>::as_ref::<'_>` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:444:18: 444:46
+    = note: inside `std::sync::Arc::<fifo::FifoTask<usize>>::inner` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/sync.rs:1917:18: 1917:35
+    = note: inside `<std::sync::Arc<fifo::FifoTask<usize>> as std::ops::Deref>::deref` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/sync.rs:2232:10: 2232:22
+note: inside `tests::fifo::bench_remove`
+   --> src/tests.rs:69:33
+    |
+ 69 |                     assert_eq!(*t.inner(), i);
+    |                                 ^^^^^^^^^
+...
+ 82 | def_test_sched!(fifo, FifoScheduler::<usize>, FifoTask::<usize>);
+    | ---------------------------------------------------------------- in this macro invocation
+note: inside closure
+   --> src/tests.rs:55:30
+    |
+ 55 |             fn bench_remove() {
+    |                              ^
+...
+ 82 | def_test_sched!(fifo, FifoScheduler::<usize>, FifoTask::<usize>);
+    | ---------------------------------------------------------------- in this macro invocation
+    = note: this error originates in the macro `def_test_sched` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error
+
+error: test failed, to rerun pass `--lib`
+
+Caused by:
+  process didn't exit successfully: `/home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/bin/cargo-miri runner /home/gh-zjp-CN/bugs-found/repos/arceos-org/axsched/target/miri/aarch64-unknown-linux-gnu/debug/deps/axsched-bbfdae07ace27dc9 'tests::fifo::bench_remove' 'tests::fifo::test_sched'` (exit status: 1)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.
