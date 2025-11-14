@@ -19,3 +19,11 @@
 [submodule "repos/arceos-org/slab_allocator"]
 	path = repos/arceos-org/slab_allocator
 	url = https://github.com/arceos-org/slab_allocator
+[submodule "fix/axsched"]
+	path = fix/axsched
+	url = https://github.com/os-checker/axsched
+	branch = fix
+[submodule "fix/linked_list_r4l"]
+	path = fix/linked_list_r4l
+	url = https://github.com/os-checker/linked_list_r4l
+	branch = fix
