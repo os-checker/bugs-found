@@ -23,7 +23,9 @@ Integer-to-pointer cast 警告（关于 provenance)
 
 注：os-checker 设置 1 分钟检测时间上限，防止出现卡住，并尽可能快完成检查。
 
-## Unsoundness of `linked_list_r4l::CursorMut`
+## linked_list_r4l
+
+### Unsoundness of `CursorMut`
 
 展示这个数据结构的 safe API 具有未定义行为的测例：
 
@@ -147,3 +149,77 @@ help: and (1) occurred earlier here
    = note: BACKTRACE (of the first span) on thread `0`:
    = note: inside closure at tests/cursor_mut.rs:42:17: 42:21
 ```
+
+### Aliasing Violation
+
+```rust
+$ cargo miri pop_front_unsoundness
+error: Undefined Behavior: deallocation through <133683> at alloc42029[0x11] is forbidden
+    --> /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1686:17
+     |
+1686 |                 self.1.deallocate(From::from(ptr.cast()), layout);
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here
+     |
+     = help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental
+     = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/tree-borrows.md for further information
+     = help: the accessed tag <133683> is a child of the conflicting tag <133604>
+     = help: the conflicting tag <133604> has state Frozen which forbids this deallocation (acting as a child write access)
+help: the accessed tag <133683> was created here
+    --> tests/pop_front.rs:11:5
+     |
+  11 |     list.pop_front().unwrap();
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+help: the conflicting tag <133604> was created here, in the initial state Cell
+    --> /home/gh-zjp-CN/bugs-found/repos/arceos-org/linked_list_r4l/src/raw_list.rs:162:28
+     |
+ 162 |         let new_ptr = Some(NonNull::from(new));
+     |                            ^^^^^^^^^^^^^^^^^^
+     = note: BACKTRACE (of the first span) on thread `pop_front_unsou`:
+     = note: inside `<std::boxed::Box<Node> as std::ops::Drop>::drop` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:1686:17: 1686:66
+     = note: inside `std::ptr::drop_in_place::<std::boxed::Box<Node>> - shim(Some(std::boxed::Box<Node>))` at /home/gh-zjp-CN/.rustup/toolchains/nightly-aarch64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1: 807:25
+note: inside `pop_front_unsoundness`
+    --> tests/pop_front.rs:11:30
+     |
+  11 |     list.pop_front().unwrap();
+     |                              ^
+note: inside closure
+    --> tests/pop_front.rs:8:27
+     |
+   7 | #[test]
+     | ------- in this attribute macro expansion
+   8 | fn pop_front_unsoundness() {
+     |                           ^
+```
+
+### 修复 linked_list_r4l 和 axsched
+
+axsched 的 `fifo::{bench_remove,test_sched}` 测例 UB 是上游 linked_list_r4l 导致的，因此修复集中在 linked_list_r4l。
+
+对 linked_list_r4l 的修复有两种思路：
+1. 尽可能保留现有代码
+2. 重新将 Rust for Linux 的链表代码抽取出来
+
+这里聚焦于第一种思路。
+
+对于 `CursorMut` 暴露 `&mut T` 问题，我们可以把涉及的函数改为 unsafe，或者保持 safe fn 但返回 `*mut T`。
+
+对于 aliasing 问题，首先修复的地方是在推入节点的时候，传递 `NonNull` ptr 而不是共享引用：
+
+```diff
+pub fn push_back(&mut self, data: G::Wrapped) {
+    let ptr = data.into_pointer();
+
+    // SAFETY: We took ownership of the entry, so it is safe to insert it.
+-    if !unsafe { self.list.push_back(ptr.as_ref()) } {
++    if !unsafe { self.list.push_back(ptr) } {
+```
+
+这意味着 `RawList::push_back` 应该采用 `NonNull` 而不是 `&`：
+
+```diff
+-pub unsafe fn push_back(&mut self, new: &G::EntryType) -> bool {
++pub unsafe fn push_back(&mut self, new: NonNull<G::EntryType>) -> bool {
+```
+
+还需要类似的的函数改动指针类型。
+
