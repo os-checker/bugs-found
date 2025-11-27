@@ -283,4 +283,5 @@ bindings 只是 C 的接口，没有链接到内核的实现。这意味着无�
 # Asterinas
 
 Existent issues:
-* [assert_eq!() hangs on failure/panic in ktest](https://github.com/asterinas/asterinas/issues/1584)
+* panic: [assert_eq!() hangs on failure/panic in ktest](https://github.com/asterinas/asterinas/issues/1584)
+* panic: [FileHandle::metadata should not have a default implementation that panics](https://github.com/asterinas/asterinas/issues/1511)
